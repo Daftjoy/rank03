@@ -6,7 +6,7 @@
 /*   By: antmarti <antmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 10:35:03 by antmarti          #+#    #+#             */
-/*   Updated: 2020/09/02 12:34:13 by antmarti         ###   ########.fr       */
+/*   Updated: 2020/09/02 13:38:55 by antmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int		ft_get_shape(int ret, t_shape shape)
 	return (0);
 }
 
-char	*ft_background(t_zone zone, t_shape shape)
+char	*ft_background(t_zone zone)
 {
 	char	*drawing;
 	int		i;
@@ -59,6 +59,40 @@ char	*ft_background(t_zone zone, t_shape shape)
 	while (i < zone.width * zone.height)
 		drawing[i++] = zone.background;
 	return (drawing);
+}
+
+char	*ft_fill(t_zone zone, t_shape shape, char *drawing)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (i < zone.width)
+	{
+		j = 0;
+		while (j < zone.height)
+		{
+			if (i >= shape.x && i < shape.x + shape.width &&
+			j >= shape.y && j < shape.y + shape.height)
+				drawing[i + j] = shape.color;
+			j++;
+		}
+		i++;
+	}
+	return (drawing);
+}
+
+void	ft_printer(t_zone zone, char *drawing)
+{
+	int i;
+
+	i = 0;
+	while (i < zone.height)
+	{
+		write(1, drawing + (i * zone.width), zone.width);
+		write(1, "\n", 1);
+		i++;
+	}
 }
 
 int		main(int argc, char **argv)
@@ -80,6 +114,8 @@ int		main(int argc, char **argv)
 	&shape.width, &shape.height, &shape.color);
 	if (ft_get_shape(ret, shape) == 1)
 		return (1);
-	drawing = ft_background(zone, shape);
+	drawing = ft_background(zone);
+	drawing = ft_fill(zone, shape, drawing);
+	ft_printer(zone, drawing);
 	return (0);
 }
