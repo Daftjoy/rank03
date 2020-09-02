@@ -61,6 +61,14 @@ char	*ft_background(t_zone zone)
 	return (drawing);
 }
 
+int		ft_isinside(t_shape shape, int i, int j)
+{
+	if (i >= shape.y && i < shape.y + shape.height &&
+			j >= shape.x && j < shape.x + shape.width)
+		return (1);
+	return (0);
+}
+
 char	*ft_fill(t_zone zone, t_shape shape, char *drawing)
 {
 	int i;
@@ -72,8 +80,10 @@ char	*ft_fill(t_zone zone, t_shape shape, char *drawing)
 		j = 0;
 		while (j < zone.width)
 		{
-			if (i >= shape.y && i < shape.y + shape.height &&
-			j >= shape.x && j < shape.x + shape.width)
+			if (ft_isinside(shape, i, j) && (shape.type == 'R'
+			|| (shape.type == 'r' && i !=0 && j != 0 && i < zone.height-1 && j < zone.width-1 &&
+			(!(ft_isinside(shape, i, j-1) && ft_isinside(shape, i-1, j) && ft_isinside(shape, i, j+1) 
+			&& ft_isinside(shape, i+1, j))))))
 				drawing[(i * zone.width) + j] = shape.color;
 			j++;
 		}
