@@ -67,14 +67,14 @@ char	*ft_fill(t_zone zone, t_shape shape, char *drawing)
 	int j;
 
 	i = 0;
-	while (i < zone.width)
+	while (i < zone.height)
 	{
 		j = 0;
-		while (j < zone.height)
+		while (j < zone.width)
 		{
-			if (i >= shape.x && i < shape.x + shape.width &&
-			j >= shape.y && j < shape.y + shape.height)
-				drawing[i + j] = shape.color;
+			if (i >= shape.y && i < shape.y + shape.height &&
+			j >= shape.x && j < shape.x + shape.width)
+				drawing[(i * zone.width) + j] = shape.color;
 			j++;
 		}
 		i++;
