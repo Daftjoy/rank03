@@ -6,7 +6,7 @@
 /*   By: antmarti <antmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 10:58:41 by antmarti          #+#    #+#             */
-/*   Updated: 2020/09/02 10:58:44 by antmarti         ###   ########.fr       */
+/*   Updated: 2020/09/03 12:29:50 by antmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,4 @@ typedef struct	s_shape
 	float	width;
 	float	height;
 	char	color;
-	struct s_shape	*next;
 }				t_shape;

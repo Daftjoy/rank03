@@ -6,7 +6,7 @@
 /*   By: antmarti <antmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 10:35:03 by antmarti          #+#    #+#             */
-/*   Updated: 2020/09/02 13:38:55 by antmarti         ###   ########.fr       */
+/*   Updated: 2020/09/03 12:03:21 by antmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,15 @@ int		ft_get_zone(int ret, t_zone zone)
 {
 	if (ret != 3 || zone.width < 0 || zone.width > 300 ||
 	zone.height < 0 || zone.height > 300)
-		return (ft_error("Error\n"));
+		return (ft_error("Error zone format\n"));
 	return (0);
 }
 
 int		ft_get_shape(int ret, t_shape shape)
 {
 	if (ret != 6 || (shape.type != 'r' && shape.type != 'R')
-	|| shape.width <= 0.0 || shape.height <= 0.0)
-		return (ft_error("Error\n"));
+	|| shape.width <= 0 || shape.height <= 0)
+		return (ft_error("Error shape format\n"));
 	return (0);
 }
 
@@ -81,9 +81,10 @@ char	*ft_fill(t_zone zone, t_shape shape, char *drawing)
 		while (j < zone.width)
 		{
 			if (ft_isinside(shape, i, j) && (shape.type == 'R'
-			|| (shape.type == 'r' && i !=0 && j != 0 && i < zone.height-1 && j < zone.width-1 &&
-			(!(ft_isinside(shape, i, j-1) && ft_isinside(shape, i-1, j) && ft_isinside(shape, i, j+1) 
-			&& ft_isinside(shape, i+1, j))))))
+			|| (shape.type == 'r' && ((i == 0 || j == 0) ||
+			(!(ft_isinside(shape, i, j - 1) &&
+			ft_isinside(shape, i - 1, j) && ft_isinside(shape, i, j + 1)
+			&& ft_isinside(shape, i + 1, j)))))))
 				drawing[(i * zone.width) + j] = shape.color;
 			j++;
 		}
@@ -120,12 +121,17 @@ int		main(int argc, char **argv)
 	ret = fscanf(fd, "%d %d %c\n", &zone.width, &zone.height, &zone.background);
 	if (ft_get_zone(ret, zone) == 1)
 		return (1);
-	ret = fscanf(fd, "%c %f %f %f %f %c", &shape.type, &shape.x, &shape.y,
-	&shape.width, &shape.height, &shape.color);
-	if (ft_get_shape(ret, shape) == 1)
-		return (1);
-	drawing = ft_background(zone);
-	drawing = ft_fill(zone, shape, drawing);
-	ft_printer(zone, drawing);
+	while ((ret = fscanf(fd, "%c %f %f %f %f %c\n", &shape.type,
+	&shape.x, &shape.y, &shape.width, &shape.height, &shape.color)) > 0)
+	{
+		if (ft_get_shape(ret, shape) == 1)
+			return (1);
+		if (!(drawing = ft_background(zone)))
+			return (ft_error("Malloc error"));
+		drawing = ft_fill(zone, shape, drawing);
+		ft_printer(zone, drawing);
+		write(1, "\n", 1);
+		free(drawing);
+	}
 	return (0);
 }
